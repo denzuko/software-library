@@ -171,7 +171,7 @@
         "set": "external_url 'http://gitlab.dms.local'\\ngitlab_rails['gitlab_shell_ssh_port'] = 2222\\ngitlab_rails['ldap_enabled'] = true\\ngitlab_rails['ldap_servers'] = YAML.load <<-EOS\\nmain: # 'main' is the GitLab 'provider ID' of this LDAP server\\nlabel: 'DC1'\\nhost: '192.168.0.33'\\nport: 389\\nuid: 'sAMAccountName'\\nencryption: 'start_tls'\\nverify_certificates: false\\nbind_dn: 'svc_cicd'\\npassword: '3bars4life'\\nactive_directory: true\\ngroup_base: 'OU=Applications,OU=Groups,DC=dms,DC=local'\\nblock_auto_created_users: false\\nallow_username_or_email_login: false\\nlowercase_usernames: true\\nbase: 'OU=Members,DC=dms,DC=local'\\nsync_ssh_keys: true\\nuser_filter: '(memberOf:1.2.840.113556.1.4.1941:=CN=CICD Users,OU=Applications,OU=Groups,DC=dms,DC=local)'\\nEOS"
       },
       {
-        "name": "GITLAB_ROOT_PASSWORD"
+        "name": "GITLAB_ROOT_PASSWORD",
         "label": "Root Password
       }
     ],
