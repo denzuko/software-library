@@ -159,6 +159,10 @@
         "label": "DNS hostname"
       },
       {
+        "name": "DOMAIN_CONTROLLER",
+        "label": "AD Domain Controller"
+      },
+      {
         "name": "VIRTUAL_PORT",
         "set": "80"
       },
@@ -167,12 +171,48 @@
         "set": "http"
       },
       {
+        "name": "AWS_REGION",
+        "label": "Store backups in which AWS Region"
+      },
+      {
+        "name": "AWS_ACCESS_KEY_ID",
+        "label": "Access ID for AWS S3"
+      },
+      {
+        "name": "AWS_SECRET_ACCESS_KEY",
+        "label": "Access Secret for AWS S3"
+      },
+      {
+        "name": "AWS_S3_BUCKET",
+        "label": "Access Secret for AWS S3"
+      },
+      {
         "name": "GITLAB_OMNIBUS_CONFIG",
-        "set": "external_url 'http://gitlab.dms.local'\ngitlab_rails['gitlab_shell_ssh_port'] = 2222\ngitlab_rails['ldap_enabled'] = true\ngitlab_rails['ldap_servers'] = YAML.load <<-EOS\nmain: # 'main' is the GitLab 'provider ID' of this LDAP server\nlabel: 'DC1'\nhost: '192.168.0.33'\nport: 389\nuid: 'sAMAccountName'\nencryption: 'start_tls'\nverify_certificates: false\nbind_dn: 'svc_cicd'\npassword: '3bars4life'\nactive_directory: true\ngroup_base: 'OU=Applications,OU=Groups,DC=dms,DC=local'\nblock_auto_created_users: false\nallow_username_or_email_login: false\nlowercase_usernames: true\nbase: 'OU=Members,DC=dms,DC=local'\nsync_ssh_keys: true\nuser_filter: '(memberOf:1.2.840.113556.1.4.1941:=CN=CICD Users,OU=Applications,OU=Groups,DC=dms,DC=local)'\nEOS"
+        "set": "external_url 'http://gitlab.dms.local'; gitlab_rails['backup_upload_connection'] = {'provider' => 'AWS','region' => ENV['AWS_REGION'], 'aws_access_key_id' => ENV['AWS_ACCESS_KEY_ID'], 'aws_secret_access_key' => ENV['AWS_SECRET_ACCESS_KEY'], 'backup_upload_remote_directory' => ENV['AWS_S3_BUCKET'] }; gitlab_rails['backup_keep_time'] = 604800; gitlab_rails['gitlab_shell_ssh_port'] = 2222; gitlab_rails['ldap_enabled'] = true; gitlab_rails['ldap_servers'] = { 'main' => { 'label' => 'DC1', 'host' => ENV['DOMAIN_CONTROLLER'], 'port' => '389',  'uid' => 'sAMAccountName', 'encryption' => 'start_tls',  'verify_certificates' => false, 'bind_dn' => ENV['service_account'], 'password' => ENV['service_secret'], 'active_directory' => true, 'group_base' => 'OU=Applications,OU=Groups,DC=dms,DC=local', 'block_auto_created_users' => false, 'allow_username_or_email_login' => false, 'lowercase_usernames' => true, 'base' => 'OU=Members,DC=dms,DC=local', 'sync_ssh_keys' => true, 'user_filter' => '(memberOf:1.2.840.113556.1.4.1941:=CN=CICD Users,OU=Applications,OU=Groups,DC=dms,DC=local)' }};"
       },
       {
         "name": "GITLAB_ROOT_PASSWORD",
         "label": "Root Password"
+      },
+      {
+        "name": "OAUTH_ENABLED",
+        "set": "true"
+      },
+      {
+        "name": "OAUTH_ALLOW_SSO",
+        "set": "true"
+      },
+      {
+        "name": "OAUTH_BLOCK_AUTO_CREATED_USERS",
+        "set": "false"
+      },
+      {
+        "name": "OAUTH_AUTO_LINK_LDAP_USER",
+        "set": "true"
+      },
+      {
+        "name": "OAUTH_AUTO_LINK_SAML_USER",
+        "set": "false"
       }
     ],
     "restart_policy": "on-failure",
