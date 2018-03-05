@@ -184,7 +184,7 @@
       },
       {
         "name": "AWS_S3_BUCKET",
-        "label": "Access Secret for AWS S3"
+        "label": "AWS S3 location for backup"
       },
       {
         "name": "GITLAB_OMNIBUS_CONFIG",
