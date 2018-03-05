@@ -172,7 +172,7 @@
       },
       {
         "name": "GITLAB_ROOT_PASSWORD",
-        "label": "Root Password
+        "label": "Root Password"
       }
     ],
     "restart_policy": "on-failure:5",
