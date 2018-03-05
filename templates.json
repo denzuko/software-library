@@ -14,46 +14,6 @@
   },
   {
     "type": "container",
-    "title": "Nginx",
-    "description": "High performance web server",
-    "categories": ["webserver"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/nginx.png",
-    "image": "nginx:latest",
-    "ports": [
-      "80/tcp",
-      "443/tcp"
-    ],
-    "volumes": ["/etc/nginx", "/usr/share/nginx/html"]
-  },
-  {
-    "type": "container",
-    "title": "Httpd",
-    "description": "Open-source HTTP server",
-    "categories": ["webserver"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/httpd.png",
-    "image": "httpd:latest",
-    "ports": [
-      "80/tcp"
-    ],
-    "volumes": ["/usr/local/apache2/htdocs/"]
-  },
-  {
-    "type": "container",
-    "title": "Caddy",
-    "description": "HTTP/2 web server with automatic HTTPS",
-    "categories": ["webserver"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/caddy.png",
-    "image": "abiosoft/caddy:latest",
-    "ports": [
-      "80/tcp", "443/tcp", "2015/tcp"
-    ],
-    "volumes": ["/root/.caddy"]
-  },
-  {
-    "type": "container",
     "title": "MySQL",
     "description": "The most popular open-source database",
     "categories": ["database"],
@@ -163,8 +123,21 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/elasticsearch.png",
     "image": "elasticsearch:latest",
+    "restart_policy": "on-failure:5",
+    "env": [
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname"
+      },
+      {
+        "name": "VIRTUAL_PORT",
+        "set": "9200"
+      },
+      {
+        "name": "VIRTUAL_PROTO",
+        "set": "http"
+      }
+    ],
     "ports": [
-      "9200/tcp",
       "9300/tcp"
     ],
     "volumes": ["/usr/share/elasticsearch/data"]
@@ -174,12 +147,36 @@
     "title": "Gitlab CE",
     "description": "Open-source end-to-end software development platform",
     "note": "Default username is <b>root</b>. Check the <a href=\"https://docs.gitlab.com/omnibus/docker/README.html#after-starting-a-container\" target=\"_blank\">Gitlab documentation</a> to get started.",
-    "categories": ["development", "project-management"],
+    "categories": ["development", "project-management", "vault", "cicd"],
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/gitlab_ce.png",
     "image": "gitlab/gitlab-ce:latest",
+    "env": [
+      { "name": "GITLAB_HOST",
+        "label": "full url of instance - ie http/https..$VIRTUAL_HOST"
+      },
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname"
+      },
+      {
+        "name": "VIRTUAL_PORT",
+        "set": "80"
+      },
+      {
+        "name": "VIRTUAL_PROTO",
+        "set": "http"
+      },
+      {
+        "name": "GITLAB_OMNIBUS_CONFIG",
+        "set": "external_url 'http://gitlab.dms.local'\\ngitlab_rails['gitlab_shell_ssh_port'] = 2222\\ngitlab_rails['ldap_enabled'] = true\\ngitlab_rails['ldap_servers'] = YAML.load <<-EOS\\nmain: # 'main' is the GitLab 'provider ID' of this LDAP server\\nlabel: 'DC1'\\nhost: '192.168.0.33'\\nport: 389\\nuid: 'sAMAccountName'\\nencryption: 'start_tls'\\nverify_certificates: false\\nbind_dn: 'svc_cicd'\\npassword: '3bars4life'\\nactive_directory: true\\ngroup_base: 'OU=Applications,OU=Groups,DC=dms,DC=local'\\nblock_auto_created_users: false\\nallow_username_or_email_login: false\\nlowercase_usernames: true\\nbase: 'OU=Members,DC=dms,DC=local'\\nsync_ssh_keys: true\\nuser_filter: '(memberOf:1.2.840.113556.1.4.1941:=CN=CICD Users,OU=Applications,OU=Groups,DC=dms,DC=local)'\\nEOS"
+      },
+      {
+        "name": "GITLAB_ROOT_PASSWORD"
+        "label": "Root Password
+      }
+    ],
+    "restart_policy": "on-failure:5",
     "ports": [
-      "80/tcp",
       "443/tcp",
       "22/tcp"
     ],
@@ -197,10 +194,19 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/minio.png",
     "image": "minio/minio:latest",
-    "ports": [
-      "9000/tcp"
-    ],
+    "restart_policy": "on-failure:5",
     "env": [
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname"
+      },
+      {
+        "name": "VIRTUAL_PORT",
+        "set": "9000"
+      },
+      {
+        "name": "VIRTUAL_PROTO",
+        "set": "http"
+      },
       {
         "name": "MINIO_ACCESS_KEY",
         "label": "Minio access key"
@@ -221,10 +227,19 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/scality-s3.png",
     "image": "scality/s3server",
-    "ports": [
-      "8000/tcp"
-    ],
+    "restart_policy": "on-failure:5",
     "env": [
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname"
+      },
+      {
+        "name": "VIRTUAL_PORT",
+        "set": "8000"
+      },
+      {
+        "name": "VIRTUAL_PROTO",
+        "set": "http"
+      },
       {
         "name": "SCALITY_ACCESS_KEY",
         "label": "Scality S3 access key"
@@ -347,34 +362,7 @@
     ],
     "volumes": ["/var/lib/rabbitmq"]
   },
-  {
-    "type": "container",
-    "title": "Ghost",
-    "description": "Free and open-source blogging platform",
-    "categories": ["blog"],
-    "note": "Access the blog management interface under <code>/ghost/</code>.",
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/ghost.png",
-    "image": "ghost:latest",
-    "ports": [
-      "2368/tcp"
-    ],
-    "volumes": ["/var/lib/ghost/content"]
-  },
-  {
-    "type": "container",
-    "title": "Plesk",
-    "description": "WebOps platform and hosting control panel",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "note": "Default credentials: admin / changeme",
-    "logo": "https://cloudinovasi.id/assets/img/logos/plesk.png",
-    "image": "plesk/plesk:preview",
-    "ports": [
-      "21/tcp", "80/tcp", "443/tcp", "8880/tcp", "8443/tcp", "8447/tcp"
-    ]
-  },
-  {
+   {
     "type": "container",
     "title": "WordPress",
     "description": "A free and open-source CMS",
@@ -382,7 +370,19 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/wordpress.png",
     "image": "wordpress:latest",
+    "restart_policy": "on-failure:5",
     "env": [
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname"
+      },
+      {
+        "name": "VIRTUAL_PORT",
+        "set": "80"
+      },
+      {
+        "name": "VIRTUAL_PROTO",
+        "set": "http"
+      },
       {
         "name": "WORDPRESS_DB_HOST",
         "label": "MySQL database host",
@@ -393,75 +393,7 @@
         "label": "Database password"
       }
     ],
-    "ports": [
-      "80/tcp"
-    ],
     "volumes": ["/var/www/html"]
-  },
-  {
-    "type": "container",
-    "title": "Joomla",
-    "description": "Another free and open-source CMS",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/joomla.png",
-    "image": "joomla:latest",
-    "env": [
-      {
-        "name": "JOOMLA_DB_HOST",
-        "label": "MySQL database host",
-        "type": "container"
-      },
-      {
-        "name": "JOOMLA_DB_PASSWORD",
-        "label": "Database password"
-      }
-    ],
-    "ports": [
-      "80/tcp"
-    ],
-    "volumes": ["/var/www/html"]
-  },
-  {
-    "type": "container",
-    "title": "Drupal",
-    "description": "Open-source content management framework",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/drupal.png",
-    "image": "drupal:latest",
-    "ports": [
-      "80/tcp"
-    ],
-    "volumes": ["/var/www/html"]
-  },
-  {
-    "type": "container",
-    "title": "Plone",
-    "description": "A free and open-source CMS built on top of Zope",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/plone.png",
-    "image": "plone:latest",
-    "ports": [
-      "8080/tcp"
-    ],
-    "volumes": ["/data"]
-  },
-  {
-    "type": "container",
-    "title": "Magento 2",
-    "description": "Open-source e-commerce platform",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/magento.png",
-    "image": "alankent/gsd:latest",
-    "ports": [
-      "80/tcp",
-      "3000/tcp",
-      "3001/tcp"
-    ],
-    "volumes": ["/var/www/html/"]
   },
   {
     "type": "container",
@@ -513,39 +445,6 @@
       "8088/tcp"
     ],
     "volumes": ["/var/lib/wowza"]
-  },
-  {
-    "type": "container",
-    "title": "Jenkins",
-    "description": "Open-source continuous integration tool",
-    "categories": ["continuous-integration"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/jenkins.png",
-    "image": "jenkins/jenkins:lts",
-    "ports": [
-      "8080/tcp",
-      "50000/tcp"
-    ],
-    "env": [
-      {
-        "name": "JENKINS_OPTS",
-        "label": "Jenkins options"
-      }
-    ],
-    "volumes": ["/var/jenkins_home"]
-  },
-  {
-    "type": "container",
-    "title": "Redmine",
-    "description": "Open-source project management tool",
-    "categories": ["project-management"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/redmine.png",
-    "image": "redmine:latest",
-    "ports": [
-      "3000/tcp"
-    ],
-    "volumes": ["/usr/src/redmine/files"]
   },
   {
     "type": "container",
@@ -608,33 +507,6 @@
     ]
   },
   {
-    "type": "container",
-    "title": "ContentBox",
-    "description": "Open-source modular CMS",
-    "categories": ["CMS"],
-    "platform": "linux",
-    "logo": "https://cloudinovasi.id/assets/img/logos/ortussolutions-contentbox.png",
-    "image": "ortussolutions/contentbox:latest",
-    "env": [
-      {
-        "name": "express",
-        "set": "true"
-      },
-      {
-        "name": "install",
-        "set": "true"
-      },
-      {
-        "name": "CFENGINE",
-        "set": "lucee@4.5"
-      }
-    ],
-    "ports": [
-      "8080/tcp", "8443/tcp"
-    ],
-    "volumes": ["/data/contentbox/db", "/app/includes/shared/media"]
-  },
-  {
     "type": "stack",
     "title": "OpenFaaS",
     "description": "Serverless functions made simple",
@@ -672,7 +544,12 @@
       "url": "https://github.com/portainer/templates",
       "stackfile": "stacks/wordpress/docker-stack.yml"
     },
+    "restart_policy": "on-failure:5",
     "env": [
+      { "name": "VIRTUAL_HOST",
+        "label": "DNS hostname",
+        "description": "Host cname setup in dns on dc1.dms.local"
+      },
       {
         "name": "MYSQL_ROOT_PASSWORD",
         "label": "Database root password",
