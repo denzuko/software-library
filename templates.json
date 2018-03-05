@@ -123,7 +123,7 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/elasticsearch.png",
     "image": "elasticsearch:latest",
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "env": [
       { "name": "VIRTUAL_HOST",
         "label": "DNS hostname"
@@ -175,7 +175,7 @@
         "label": "Root Password"
       }
     ],
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "ports": [
       "443/tcp",
       "22/tcp"
@@ -194,7 +194,7 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/minio.png",
     "image": "minio/minio:latest",
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "env": [
       { "name": "VIRTUAL_HOST",
         "label": "DNS hostname"
@@ -227,7 +227,7 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/scality-s3.png",
     "image": "scality/s3server",
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "env": [
       { "name": "VIRTUAL_HOST",
         "label": "DNS hostname"
@@ -370,7 +370,7 @@
     "platform": "linux",
     "logo": "https://cloudinovasi.id/assets/img/logos/wordpress.png",
     "image": "wordpress:latest",
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "env": [
       { "name": "VIRTUAL_HOST",
         "label": "DNS hostname"
@@ -544,7 +544,7 @@
       "url": "https://github.com/portainer/templates",
       "stackfile": "stacks/wordpress/docker-stack.yml"
     },
-    "restart_policy": "on-failure:5",
+    "restart_policy": "on-failure",
     "env": [
       { "name": "VIRTUAL_HOST",
         "label": "DNS hostname",
