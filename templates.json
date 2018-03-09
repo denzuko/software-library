@@ -152,6 +152,7 @@
     "logo": "https://cloudinovasi.id/assets/img/logos/gitlab_ce.png",
     "image": "gitlab/gitlab-ce:latest",
     "env": [
+      { "name": "affinity:local.dms.platform", "set": "=x86" },
       { "name": "GITLAB_HOST",
         "label": "full url of instance (ie $PROTO://$HOST/)"
       },
@@ -218,7 +219,7 @@
         "name": "OAUTH_AUTO_LINK_LDAP_USER",
         "set": "true"
       },
-      {
+       {
         "name": "OAUTH_AUTO_LINK_SAML_USER",
         "set": "false"
       }
@@ -232,6 +233,12 @@
       { "container": "/etc/gitlab" },
       { "container": "/var/log/gitlab" },
       { "container": "/var/opt/gitlab" }
+    ],
+    "labels": [
+      { "name": "local.dms.owner", "value": "infrastructure" },
+      { "name": "com.centurylinklabs.watchtower.enable", "value": "true" },
+      { "name": "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy", "value": "" },
+      { "name": "com.docker.swarm.affinities=["local.dms.platform==x86"] }
     ]
   },
   {
@@ -265,7 +272,12 @@
       }
     ],
     "volumes": ["/export", "/root/.minio"],
-    "command": "server /export"
+    "command": "server /export",
+    "labels": [
+      { "name": "local.dms.owner", "value": "infrastructure" },
+      { "name": "com.centurylinklabs.watchtower.enable", "value": "true" },
+      { "name": "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy", "value": "" }
+    ]
   },
   {
     "type": "container",
@@ -297,7 +309,12 @@
         "label": "Scality S3 secret key"
       }
     ],
-    "volumes": ["/usr/src/app/localData", "/usr/src/app/localMetadata"]
+    "volumes": ["/usr/src/app/localData", "/usr/src/app/localMetadata"],
+    "labels": [
+      { "name": "local.dms.owner", "value": "infrastructure" },
+      { "name": "com.centurylinklabs.watchtower.enable", "value": "true" },
+      { "name": "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy", "value": "" }
+    ]
   },
   {
     "type": "container",
